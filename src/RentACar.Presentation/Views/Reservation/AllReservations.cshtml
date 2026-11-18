@@ -1,0 +1,130 @@
+﻿@model List<RentACar.BLL.DTOs.ReservationDto>
+
+@{
+    ViewData["Title"] = "Sve rezervacije";
+}
+
+<div class="admin-reservations-page">
+    <div class="admin-reservations-heading">
+        <div>
+            <span class="reservation-label">ADMINISTRACIJA</span>
+            <h1>Sve rezervacije</h1>
+            <p>Pregled svih rezervacija i aktivnosti korisnika.</p>
+        </div>
+
+        <a asp-controller="Dashboard"
+           asp-action="Index"
+           class="btn btn-outline-gold">
+            Kontrolna tabla
+        </a>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="reservations-empty">
+            <div class="empty-icon">📋</div>
+            <h3>Nema rezervacija</h3>
+            <p>Trenutno nema rezervacija u sistemu.</p>
+        </div>
+    }
+    else
+    {
+        <div class="admin-reservations-table-card">
+            <div class="admin-table-header">
+                <div>
+                    <h3>Pregled rezervacija</h3>
+                    <span>Ukupno rezervacija: @Model.Count</span>
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="table admin-reservations-table">
+                    <thead>
+                        <tr>
+                            <th>Korisnik</th>
+                            <th>Email</th>
+                            <th>Automobil</th>
+                            <th>Preuzimanje</th>
+                            <th>Vraćanje</th>
+                            <th>Dana</th>
+                            <th>Cena po danu</th>
+                            <th>Ukupno</th>
+                            <th>Status</th>
+                            <th>Kreirano</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var reservation in Model)
+                        {
+                            <tr>
+                                <td class="admin-user-name">
+                                    @reservation.UserFirstName
+                                    @reservation.UserLastName
+                                </td>
+
+                                <td>@reservation.UserEmail</td>
+
+                                <td class="admin-car-name">
+                                    @reservation.CarBrand
+                                    @reservation.CarModel
+                                </td>
+
+                                <td>
+                                    @reservation.StartDate.ToString("dd.MM.yyyy.")
+                                </td>
+
+                                <td>
+                                    @reservation.EndDate.ToString("dd.MM.yyyy.")
+                                </td>
+
+                                <td>@reservation.NumberOfDays</td>
+
+                                <td>
+                                    @reservation.PricePerDay.ToString("N2") RSD
+                                </td>
+
+                                <td class="admin-total-price">
+                                    @reservation.TotalPrice.ToString("N2") RSD
+                                </td>
+
+                                <td>
+                                    @if (reservation.Status == "Cancelled")
+                                    {
+                                        <span class="admin-status admin-status-cancelled">
+                                            Otkazana
+                                        </span>
+                                    }
+                                    else if (reservation.Status == "Confirmed")
+                                    {
+                                        <span class="admin-status admin-status-confirmed">
+                                            Potvrđena
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="admin-status admin-status-pending">
+                                            @reservation.Status
+                                        </span>
+                                    }
+                                </td>
+
+                                <td>
+                                    @reservation.CreatedAt.ToString("dd.MM.yyyy. HH:mm")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+
+    <div class="admin-reservations-back">
+        <a asp-controller="Car"
+           asp-action="Index"
+           class="btn btn-gold">
+            Nazad na automobile
+        </a>
+    </div>
+</div>

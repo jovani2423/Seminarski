@@ -1,0 +1,105 @@
+﻿@model RentACar.Presentation.ViewModels.CarViewModel
+
+@{
+    ViewData["Title"] = "Detalji automobila";
+}
+
+<div class="details-page">
+    <a asp-controller="Car"
+       asp-action="Index"
+       class="back-link">
+        ← Nazad na automobile
+    </a>
+
+    <div class="details-card">
+        <div class="details-image">
+            @if (!string.IsNullOrWhiteSpace(Model.ImageUrl))
+            {
+                <img src="@Model.ImageUrl"
+                     alt="@Model.Brand @Model.Model" />
+            }
+            else
+            {
+                <div class="details-image-placeholder">
+                    <span>🚘</span>
+                    <p>RentACar</p>
+                </div>
+            }
+        </div>
+
+        <div class="details-content">
+            <span class="section-label">DETALJI VOZILA</span>
+
+            <h1>@Model.Brand @Model.Model</h1>
+
+            <p class="details-subtitle">
+                Pouzdan izbor za Vaše sledeće putovanje.
+            </p>
+
+            <div class="details-price">
+                <span>Cena najma</span>
+                <strong>@Model.PricePerDay.ToString("N2") RSD</strong>
+                <small>po danu</small>
+            </div>
+
+            <div class="details-specifications">
+                <div class="specification-item">
+                    <span>Godište</span>
+                    <strong>@Model.Year</strong>
+                </div>
+
+                <div class="specification-item">
+                    <span>Registracija</span>
+                    <strong>@Model.RegistrationNumber</strong>
+                </div>
+
+                <div class="specification-item">
+                    <span>Marka</span>
+                    <strong>@Model.Brand</strong>
+                </div>
+
+                <div class="specification-item">
+                    <span>Model</span>
+                    <strong>@Model.Model</strong>
+                </div>
+            </div>
+
+            <div class="details-description">
+                <h5>Opis automobila</h5>
+                <p>
+                    @(string.IsNullOrWhiteSpace(Model.Description)
+                        ? "Za ovaj automobil trenutno nije unet dodatni opis."
+                        : Model.Description)
+                </p>
+            </div>
+
+            <div class="details-actions">
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <a asp-controller="Reservation"
+                       asp-action="Create"
+                       asp-route-carId="@Model.Id"
+                       class="btn btn-gold btn-lg">
+                        Rezervišite automobil
+                    </a>
+                }
+
+                @if (User.IsInRole("Admin"))
+                {
+                    <a asp-controller="Car"
+                       asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       class="btn btn-outline-dark btn-lg">
+                        Izmenite automobil
+                    </a>
+                }
+
+                <a asp-controller="Car"
+                   asp-action="Index"
+                   class="btn btn-light btn-lg">
+                    Nazad
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

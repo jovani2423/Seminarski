@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Početna";
+}
+
+<section class="hero-section">
+    <div class="hero-overlay">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="hero-label">DOBRODOŠLI U RENTACAR</span>
+
+                    <h1 class="hero-title">
+                        Vaše putovanje<br />
+                        <span>Naš automobil</span>
+                    </h1>
+
+                    <p class="hero-description">
+                        Iznajmite automobil brzo, jednostavno i sigurno.
+                        Pronađite vozilo koje odgovara Vašim potrebama
+                        i krenite na put bez komplikacija.
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a asp-controller="Car"
+                           asp-action="Index"
+                           class="btn btn-gold btn-lg">
+                            Pogledajte automobile
+                        </a>
+
+                        @if (User.Identity == null || !User.Identity.IsAuthenticated)
+                        {
+                            <a asp-controller="Account"
+                               asp-action="Register"
+                               class="btn btn-outline-light btn-lg">
+                                Registrujte se
+                            </a>
+                        }
+                        else
+                        {
+                            <a asp-controller="Reservation"
+                               asp-action="MyReservations"
+                               class="btn btn-outline-light btn-lg">
+                                Moje rezervacije
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="features-section">
+    <div class="container">
+        <div class="text-center section-heading">
+            <span class="section-label">ZAŠTO RENTACAR?</span>
+            <h2>Jednostavan najam automobila</h2>
+            <p>
+                Sve što Vam je potrebno za bezbrižno putovanje
+                nalazi se na jednom mestu.
+            </p>
+        </div>
+
+        <div class="row g-4 mt-3">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🚘</div>
+                    <h4>Veliki izbor vozila</h4>
+                    <p>
+                        Pronađite automobil koji odgovara Vašem stilu,
+                        potrebama i planiranom putovanju.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📅</div>
+                    <h4>Jednostavna rezervacija</h4>
+                    <p>
+                        Izaberite automobil i željeni period najma
+                        kroz nekoliko jednostavnih koraka.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <div class="feature-icon">💰</div>
+                    <h4>Transparentne cene</h4>
+                    <p>
+                        Unapred pogledajte cenu po danu i ukupnu
+                        vrednost rezervacije.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="home-cta">
+    <div class="container text-center">
+        <h2>Spremni za sledeće putovanje?</h2>
+        <p>Pronađite svoj automobil i rezervišite ga već danas.</p>
+
+        <a asp-controller="Car"
+           asp-action="Index"
+           class="btn btn-gold btn-lg">
+            Istražite ponudu
+        </a>
+    </div>
+</section>

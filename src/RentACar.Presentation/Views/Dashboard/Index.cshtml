@@ -1,0 +1,150 @@
+﻿@model RentACar.BLL.DTOs.DashboardDto
+
+@{
+    ViewData["Title"] = "Administratorska kontrolna tabla";
+}
+
+<h2 class="mb-4">Administratorska kontrolna tabla</h2>
+
+<div class="row">
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5>Registrovani korisnici</h5>
+                <h2>@Model.TotalUsers</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5>Ukupno automobila</h5>
+                <h2>@Model.TotalCars</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-info">
+            <div class="card-body">
+                <h5>Aktivni automobili</h5>
+                <h2>@Model.ActiveCars</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-secondary">
+            <div class="card-body">
+                <h5>Ukupno rezervacija</h5>
+                <h2>@Model.TotalReservations</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5>Potvrđene rezervacije</h5>
+                <h2>@Model.ConfirmedReservations</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-danger">
+            <div class="card-body">
+                <h5>Otkazane rezervacije</h5>
+                <h2>@Model.CancelledReservations</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5>Ukupna vrednost potvrđenih rezervacija</h5>
+                <h2>@Model.TotalRevenue.ToString("N2") RSD</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<a asp-controller="Car"
+   asp-action="Index"
+   class="btn btn-primary mt-3">
+    Nazad na automobile
+</a>
+
+
+<div class="card mt-4 mb-4">
+    <div class="card-body">
+        <h4 class="card-title mb-4">
+            Broj rezervacija po mesecima
+        </h4>
+
+        <div style="height: 350px;">
+            <canvas id="reservationsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        const monthlyData = @Html.Raw(
+            System.Text.Json.JsonSerializer.Serialize(
+                Model.MonthlyReservationCounts
+            )
+        );
+
+        const monthNames = [
+            "Januar", "Februar", "Mart",
+            "April", "Maj", "Jun",
+            "Jul", "Avgust", "Septembar",
+            "Oktobar", "Novembar", "Decembar"
+        ];
+
+        const labels = Object.keys(monthlyData).map(key => {
+            const month = parseInt(key.split("-")[1]);
+            const year = key.split("-")[0];
+
+            return monthNames[month - 1] + " " + year;
+        });
+
+        const values = Object.values(monthlyData);
+
+        const ctx = document.getElementById("reservationsChart");
+
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: "Broj rezervacija",
+                    data: values,
+                    backgroundColor: "rgba(54, 162, 235, 0.6)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            precision: 0
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+}
+
