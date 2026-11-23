@@ -1,0 +1,231 @@
+﻿@model List<RentACar.Presentation.ViewModels.BranchViewModel>
+
+@{
+    ViewData["Title"] = "Poslovnice";
+}
+
+<div class="branch-page">
+    <div class="branch-page-header">
+        <div class="branch-page-heading">
+            <div class="branch-page-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
+
+            <div>
+                <h2>Poslovnice</h2>
+                <p>Upravljanje poslovnicama RentACar sistema</p>
+            </div>
+        </div>
+
+        <a asp-action="Create" class="branch-primary-btn">
+            <i class="bi bi-plus-lg"></i>
+            Dodajte poslovnicu
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show branch-alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show branch-alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="branch-summary">
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-building"></i>
+            </div>
+            <div>
+                <span>Ukupno poslovnica</span>
+                <strong>@Model.Count</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+                <span>Aktivne poslovnice</span>
+                <strong>@Model.Count(b => b.IsActive)</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+            <div>
+                <span>Ukupno automobila</span>
+                <strong>@Model.Sum(b => b.NumberOfCars)</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="branch-table-card">
+        <div class="branch-table-header">
+            <div>
+                <h4>Pregled poslovnica</h4>
+                <p>Spisak svih registrovanih poslovnica</p>
+            </div>
+
+            <span class="branch-count">
+                @Model.Count poslovnica
+            </span>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table branch-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Poslovnica</th>
+                            <th>Lokacija</th>
+                            <th>Kontakt</th>
+                            <th>Automobili</th>
+                            <th>Status</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var branch in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="branch-name-cell">
+                                        <div class="branch-row-icon">
+                                            <i class="bi bi-building"></i>
+                                        </div>
+                                        <div>
+                                            <strong>@branch.Name</strong>
+                                            <small>ID: #@branch.Id</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="branch-info-cell">
+                                        <strong>@branch.Address</strong>
+                                        <small>@(branch.City ?? "Grad nije unet")</small>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="branch-phone">
+                                        <i class="bi bi-telephone"></i>
+                                        @(branch.PhoneNumber ?? "Nije uneto")
+                                    </span>
+                                </td>
+
+                                <td>
+                                    <span class="branch-car-count">
+                                        <i class="bi bi-car-front"></i>
+                                        @branch.NumberOfCars
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (branch.IsActive)
+                                    {
+                                        <span class="branch-status branch-status-active">
+                                            <span></span>
+                                            Aktivna
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="branch-status branch-status-inactive">
+                                            <span></span>
+                                            Neaktivna
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="branch-actions">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@branch.Id"
+                                           class="branch-action-btn branch-edit-btn"
+                                           title="Izmenite poslovnicu">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        @if (branch.IsActive)
+                                        {
+                                            <form asp-action="Deactivate"
+                                                  asp-route-id="@branch.Id"
+                                                  method="post"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Da li ste sigurni da želite da deaktivirate ovu poslovnicu?');">
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit"
+                                                        class="branch-action-btn branch-deactivate-btn"
+                                                        title="Deaktivirajte poslovnicu">
+                                                    <i class="bi bi-pause-circle"></i>
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @if (branch.NumberOfCars == 0)
+                                        {
+                                            <form asp-action="Delete"
+                                                  asp-route-id="@branch.Id"
+                                                  method="post"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovu poslovnicu?');">
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit"
+                                                        class="branch-action-btn branch-delete-btn"
+                                                        title="Obrišite poslovnicu">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="branch-empty-state">
+                <div class="branch-empty-icon">
+                    <i class="bi bi-buildings"></i>
+                </div>
+                <h4>Nema registrovanih poslovnica</h4>
+                <p>Dodajte prvu poslovnicu kako biste počeli sa upravljanjem lokacijama.</p>
+                <a asp-action="Create" class="branch-primary-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Dodajte poslovnicu
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="branch-back-area">
+        <a asp-controller="Car" asp-action="Index" class="branch-back-link">
+            <i class="bi bi-arrow-left"></i>
+            Nazad na automobile
+        </a>
+    </div>
+</div>

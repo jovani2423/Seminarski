@@ -1,0 +1,103 @@
+﻿@model RentACar.BLL.DTOs.CarCategoryDto
+
+@{
+    ViewData["Title"] = "Dodavanje kategorije";
+}
+
+<div class="branch-form-page">
+
+    <div class="branch-form-header">
+        <a asp-action="Index" class="branch-form-back">
+            <i class="bi bi-arrow-left"></i>
+            Nazad na kategorije
+        </a>
+
+        <div class="branch-form-title">
+            <div class="branch-form-icon">
+                <i class="bi bi-tags"></i>
+            </div>
+
+            <div>
+                <h2>Dodavanje kategorije</h2>
+                <p>Unesite podatke o novoj kategoriji automobila</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="branch-form-card">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-4"></div>
+
+            <div class="branch-form-section">
+                <h4>
+                    <i class="bi bi-info-circle"></i>
+                    Osnovni podaci
+                </h4>
+
+                <div class="mb-4">
+                    <label asp-for="Name" class="branch-form-label">
+                        Naziv kategorije
+                    </label>
+
+                    <input asp-for="Name"
+                           class="form-control branch-form-input"
+                           placeholder="Npr. SUV, Limuzina, Karavan..." />
+
+                    <span asp-validation-for="Name"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Description" class="branch-form-label">
+                        Opis kategorije
+                    </label>
+
+                    <textarea asp-for="Description"
+                              class="form-control branch-form-input"
+                              rows="4"
+                              placeholder="Unesite kratak opis kategorije..."></textarea>
+
+                    <span asp-validation-for="Description"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="branch-form-divider"></div>
+
+            <div class="branch-form-status">
+                <div>
+                    <strong>Aktivna kategorija</strong>
+                    <p>
+                        Aktivne kategorije dostupne su prilikom dodavanja
+                        i izmene automobila.
+                    </p>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input asp-for="IsActive"
+                           class="form-check-input"
+                           type="checkbox"
+                           role="switch" />
+                </div>
+            </div>
+
+            <div class="branch-form-actions">
+                <a asp-action="Index" class="branch-cancel-btn">
+                    Otkažite
+                </a>
+
+                <button type="submit" class="branch-save-btn">
+                    <i class="bi bi-check-lg"></i>
+                    Sačuvajte kategoriju
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

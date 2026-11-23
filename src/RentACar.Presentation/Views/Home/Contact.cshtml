@@ -1,0 +1,153 @@
+﻿@model List<RentACar.DAL.Entities.Branch>
+
+@{
+    ViewData["Title"] = "Kontakt";
+}
+
+<section class="contact-hero">
+    <div class="contact-hero-content">
+        <span class="about-eyebrow">TU SMO ZA VAS</span>
+
+        <h1>KONTAKTIRAJTE NAS</h1>
+
+        <p>
+            Imate pitanje ili Vam je potrebna dodatna informacija?
+            Rado ćemo Vam pomoći da pronađete odgovore.
+        </p>
+    </div>
+</section>
+
+<section class="contact-content">
+    <div class="about-section-heading">
+        <span class="about-eyebrow">STUPITE U KONTAKT</span>
+        <h2>Kako možemo da Vam pomognemo?</h2>
+        <div class="about-heading-line"></div>
+    </div>
+
+    <div class="row g-4 mt-3">
+
+        <div class="col-lg-5">
+            <div class="contact-info-card">
+                <h3>Informacije o kontaktu</h3>
+
+                <p class="contact-info-description">
+                    Za sva pitanja u vezi sa ponudom automobila,
+                    rezervacijama ili korišćenjem aplikacije,
+                    možete nas kontaktirati ili pronaći putem navedenih podataka.
+                </p>
+
+                <div class="contact-info-item">
+                    <div class="contact-icon">
+                        <i class="bi bi-envelope"></i>
+                    </div>
+                    <div>
+                        <h5>E-mail</h5>
+                        <p>infoRentACar@gmail.com</p>
+                    </div>
+                </div>
+
+                <div class="contact-info-item align-items-start">
+                    <div class="contact-icon">
+                        <i class="bi bi-geo-alt"></i>
+                    </div>
+                    <div>
+                        <h5>Poslovnice</h5>
+
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var branch in Model)
+                            {
+                                <div class="contact-branch">
+                                    <p class="mb-1">
+                                        <strong>RentACar @branch.City</strong>
+                                    </p>
+                                    <p class="mb-1">@branch.Address</p>
+                                    <p class="mb-2">@branch.City</p>
+
+                                    @if (!string.IsNullOrWhiteSpace(branch.PhoneNumber))
+                                    {
+                                        <p class="mb-2">
+                                            <i class="bi bi-telephone me-1"></i>
+                                            @branch.PhoneNumber
+                                        </p>
+                                    }
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <p>Trenutno nema dostupnih poslovnica.</p>
+                        }
+                    </div>
+                </div>
+
+                <div class="contact-info-bottom">
+                    <i class="bi bi-car-front-fill"></i>
+                    <span>RentACar – Vaše putovanje počinje sa nama.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-7">
+            <div class="contact-form-card">
+                <h3>Pošaljite nam poruku</h3>
+
+                <p class="contact-info-description">
+                    Popunite podatke i pripremite poruku za naš tim.
+                </p>
+
+                <form>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">Ime</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Vaše ime" />
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="form-label">Prezime</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Vaše prezime" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">E-mail adresa</label>
+                            <input type="email"
+                                   class="form-control"
+                                   placeholder="primer@gmail.com" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Naslov poruke</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Unesite naslov poruke" />
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label">Poruka</label>
+                            <textarea class="form-control"
+                                      rows="5"
+                                      placeholder="Napišite svoju poruku..."></textarea>
+                        </div>
+
+                        <div class="col-12">
+                            <button type="button"
+                                    class="btn btn-gold"
+                                    disabled>
+                                Pošaljite poruku
+                                <i class="bi bi-send ms-2"></i>
+                            </button>
+                            <small class="d-block text-muted mt-2">
+                                Slanje poruka trenutno nije aktivirano.
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>

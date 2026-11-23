@@ -1,0 +1,100 @@
+﻿@model RentACar.Presentation.ViewModels.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Registracija";
+}
+
+<div class="auth-page">
+    <div class="auth-card register-card">
+
+        <div class="auth-header">
+            <div class="auth-logo">R</div>
+            <h1>Kreirajte nalog</h1>
+            <p>Registrujte se i započnite svoje sledeće putovanje.</p>
+        </div>
+
+        <form asp-controller="Account"
+              asp-action="Register"
+              method="post">
+
+            <div asp-validation-summary="All"
+                 class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label asp-for="FirstName" class="form-label">
+                        Ime
+                    </label>
+                    <input asp-for="FirstName"
+                           class="form-control auth-input"
+                           placeholder="Unesite ime" />
+                    <span asp-validation-for="FirstName"
+                          class="text-danger"></span>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label asp-for="LastName" class="form-label">
+                        Prezime
+                    </label>
+                    <input asp-for="LastName"
+                           class="form-control auth-input"
+                           placeholder="Unesite prezime" />
+                    <span asp-validation-for="LastName"
+                          class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label">
+                    Email adresa
+                </label>
+                <input asp-for="Email"
+                       class="form-control auth-input"
+                       placeholder="Unesite email adresu" />
+                <span asp-validation-for="Email"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label">
+                    Lozinka
+                </label>
+                <input asp-for="Password"
+                       class="form-control auth-input"
+                       placeholder="Kreirajte lozinku" />
+                <span asp-validation-for="Password"
+                      class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label">
+                    Potvrda lozinke
+                </label>
+                <input asp-for="ConfirmPassword"
+                       class="form-control auth-input"
+                       placeholder="Ponovite lozinku" />
+                <span asp-validation-for="ConfirmPassword"
+                      class="text-danger"></span>
+            </div>
+
+            <button type="submit"
+                    class="btn btn-gold auth-submit">
+                Kreirajte nalog
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Već imate nalog?
+            <a asp-controller="Account"
+               asp-action="Login">
+                Prijavite se
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

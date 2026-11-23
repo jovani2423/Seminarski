@@ -1,0 +1,215 @@
+﻿@model List<RentACar.BLL.DTOs.CarCategoryDto>
+
+@{
+    ViewData["Title"] = "Kategorije";
+}
+
+<div class="branch-page">
+    <div class="branch-page-header">
+        <div class="branch-page-heading">
+            <div class="branch-page-icon">
+                <i class="bi bi-tags"></i>
+            </div>
+
+            <div>
+                <h2>Kategorije automobila</h2>
+                <p>Upravljanje kategorijama vozila u RentACar sistemu</p>
+            </div>
+        </div>
+
+        <a asp-action="Create" class="branch-primary-btn">
+            <i class="bi bi-plus-lg"></i>
+            Dodajte kategoriju
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show branch-alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show branch-alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="branch-summary">
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-tags"></i>
+            </div>
+            <div>
+                <span>Ukupno kategorija</span>
+                <strong>@Model.Count</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+                <span>Aktivne kategorije</span>
+                <strong>@Model.Count(c => c.IsActive)</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-car-front"></i>
+            </div>
+            <div>
+                <span>Automobila u kategorijama</span>
+                <strong>@Model.Sum(c => c.NumberOfCars)</strong>
+            </div>
+        </div>
+    </div>
+
+    <div class="branch-table-card">
+        <div class="branch-table-header">
+            <div>
+                <h4>Pregled kategorija</h4>
+                <p>Spisak svih kategorija automobila</p>
+            </div>
+
+            <span class="branch-count">
+                @Model.Count kategorija
+            </span>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table branch-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Kategorija</th>
+                            <th>Opis</th>
+                            <th>Automobili</th>
+                            <th>Status</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var category in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="branch-name-cell">
+                                        <div class="branch-row-icon">
+                                            <i class="bi bi-car-front"></i>
+                                        </div>
+                                        <div>
+                                            <strong>@category.Name</strong>
+                                            <small>ID: #@category.Id</small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="branch-info-cell">
+                                        <strong>
+                                            @(string.IsNullOrWhiteSpace(category.Description)
+                                                ? "Bez opisa"
+                                                : category.Description)
+                                        </strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <span class="branch-car-count">
+                                        <i class="bi bi-car-front"></i>
+                                        @category.NumberOfCars
+                                    </span>
+                                </td>
+
+                                <td>
+                                    @if (category.IsActive)
+                                    {
+                                        <span class="branch-status branch-status-active">
+                                            <span></span>
+                                            Aktivna
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="branch-status branch-status-inactive">
+                                            <span></span>
+                                            Neaktivna
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="branch-actions">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@category.Id"
+                                           class="branch-action-btn branch-edit-btn"
+                                           title="Izmenite kategoriju">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        @if (category.NumberOfCars == 0)
+                                        {
+                                            <form asp-action="Delete"
+                                                  asp-route-id="@category.Id"
+                                                  method="post"
+                                                  class="d-inline"
+                                                  onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovu kategoriju?');">
+                                                @Html.AntiForgeryToken()
+
+                                                <button type="submit"
+                                                        class="branch-action-btn branch-delete-btn"
+                                                        title="Obrišite kategoriju">
+                                                    <i class="bi bi-trash3"></i>
+                                                </button>
+                                            </form>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="branch-empty-state">
+                <div class="branch-empty-icon">
+                    <i class="bi bi-tags"></i>
+                </div>
+
+                <h4>Nema registrovanih kategorija</h4>
+
+                <p>
+                    Dodajte prvu kategoriju kako biste lakše organizovali automobile.
+                </p>
+
+                <a asp-action="Create" class="branch-primary-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Dodajte kategoriju
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="branch-back-area">
+        <a asp-controller="Car" asp-action="Index"
+           class="branch-back-link">
+            <i class="bi bi-arrow-left"></i>
+            Nazad na automobile
+        </a>
+    </div>
+</div>

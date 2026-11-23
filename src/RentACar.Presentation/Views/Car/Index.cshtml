@@ -1,0 +1,269 @@
+﻿@model List<RentACar.Presentation.ViewModels.CarViewModel>
+
+@{
+    ViewData["Title"] = "Automobili";
+}
+
+<div class="cars-header">
+    <div>
+        <span class="section-label">NAŠA PONUDA</span>
+        <h1>Pronađite svoj automobil</h1>
+        <p>Izaberite vozilo koje najbolje odgovara Vašem sledećem putovanju.</p>
+    </div>
+
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="Car"
+           asp-action="Create"
+           class="btn btn-gold">
+            + Dodajte automobil
+        </a>
+    }
+</div>
+
+<form asp-controller="Car"
+      asp-action="Index"
+      method="get"
+      class="car-search-card">
+
+    <h5>Pretraga i filteri</h5>
+
+    <div class="row g-3">
+
+        <div class="col-lg-2 col-md-6">
+            <label class="form-label">Marka ili model</label>
+            <input type="text"
+                   name="searchTerm"
+                   value="@ViewBag.SearchTerm"
+                   class="form-control"
+                   placeholder="Npr. BMW, Audi, Golf..." />
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label class="form-label">Minimalna cena (RSD)</label>
+            <input type="number"
+                   name="minPrice"
+                   value="@ViewBag.MinPrice"
+                   class="form-control"
+                   min="0"
+                   step="0.01" />
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label class="form-label">Maksimalna cena (RSD)</label>
+            <input type="number"
+                   name="maxPrice"
+                   value="@ViewBag.MaxPrice"
+                   class="form-control"
+                   min="0"
+                   step="0.01" />
+        </div>
+
+        <div class="col-lg-1 col-md-6">
+            <label class="form-label">Od godine</label>
+            <input type="number"
+                   name="minYear"
+                   value="@ViewBag.MinYear"
+                   class="form-control"
+                   min="1900"
+                   max="2100" />
+        </div>
+
+        <div class="col-lg-1 col-md-6">
+            <label class="form-label">Do godine</label>
+            <input type="number"
+                   name="maxYear"
+                   value="@ViewBag.MaxYear"
+                   class="form-control"
+                   min="1900"
+                   max="2100" />
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label class="form-label">Kategorija automobila</label>
+
+            <select name="carCategoryId" class="form-select">
+                <option value="">Sve kategorije</option>
+
+                @foreach (var category in ViewBag.Categories)
+                {
+                    if (ViewBag.CarCategoryId?.ToString() == category.Value)
+                    {
+                        <option value="@category.Value" selected>
+                            @category.Text
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@category.Value">
+                            @category.Text
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+        <div class="col-lg-2 col-md-6">
+            <label class="form-label">Poslovnica</label>
+
+            <select name="branchId" class="form-select">
+                <option value="">Sve poslovnice</option>
+
+                @foreach (var branch in ViewBag.Branches)
+                {
+                    if (ViewBag.BranchId?.ToString() == branch.Value)
+                    {
+                        <option value="@branch.Value" selected>
+                            @branch.Text
+                        </option>
+                    }
+                    else
+                    {
+                        <option value="@branch.Value">
+                            @branch.Text
+                        </option>
+                    }
+                }
+            </select>
+        </div>
+
+    </div>
+
+    <div class="search-actions">
+        <button type="submit" class="btn btn-gold">
+            Pretražite automobile
+        </button>
+
+        <a asp-controller="Car"
+           asp-action="Index"
+           class="btn btn-outline-secondary">
+            Poništite filtere
+        </a>
+    </div>
+</form>
+
+@if (Model == null || !Model.Any())
+{
+    <div class="empty-cars">
+        <div class="empty-icon">🚘</div>
+        <h3>Nema pronađenih automobila</h3>
+        <p>Pokušajte da promenite kriterijume pretrage.</p>
+
+        <a asp-controller="Car"
+           asp-action="Index"
+           class="btn btn-gold">
+            Prikažite sve automobile
+        </a>
+    </div>
+}
+else
+{
+    <div class="cars-results">
+        <h5>Dostupni automobili</h5>
+        <span>Pronađeno vozila: @Model.Count</span>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var car in Model)
+        {
+            <div class="col-xl-4 col-md-6">
+                <div class="car-card">
+
+                    <div class="car-image">
+                        @if (!string.IsNullOrWhiteSpace(car.ImageUrl))
+                        {
+                            <img src="@car.ImageUrl"
+                                 alt="@car.Brand @car.Model"
+                                 loading="lazy" />
+                        }
+                        else
+                        {
+                            <div class="car-image-placeholder">
+                                <span>🚘</span>
+                                <small>RentACar</small>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="car-card-body">
+
+                        <div class="car-year">
+                            GODIŠTE @car.Year
+                        </div>
+
+                        @if (!string.IsNullOrWhiteSpace(car.CarCategoryName))
+                        {
+                            <div class="car-category-badge">
+                                @car.CarCategoryName
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrWhiteSpace(car.BranchName))
+                        {
+                            <div class="car-branch-info">
+                                Poslovnica: @car.BranchName
+                            </div>
+                        }
+
+                        <h3>@car.Brand @car.Model</h3>
+
+                        <p class="car-registration">
+                            Registracija: @car.RegistrationNumber
+                        </p>
+
+                        <div class="car-price">
+                            <strong>@car.PricePerDay.ToString("N2") RSD</strong>
+                            <span>/ dan</span>
+                        </div>
+
+                        <div class="car-card-actions">
+                            @if (User.Identity != null && User.Identity.IsAuthenticated)
+                            {
+                                <a asp-controller="Reservation"
+                                   asp-action="Create"
+                                   asp-route-carId="@car.Id"
+                                   class="btn btn-gold">
+                                    Rezervišite
+                                </a>
+                            }
+
+                            <a asp-controller="Car"
+                               asp-action="Details"
+                               asp-route-id="@car.Id"
+                               class="btn btn-outline-dark">
+                                Detalji
+                            </a>
+                        </div>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <div class="admin-car-actions">
+
+                                <a asp-controller="Car"
+                                   asp-action="Edit"
+                                   asp-route-id="@car.Id"
+                                   class="btn btn-warning btn-sm">
+                                    Izmenite
+                                </a>
+
+                                <form asp-controller="Car"
+                                      asp-action="Deactivate"
+                                      asp-route-id="@car.Id"
+                                      method="post"
+                                      onsubmit="return confirm('Da li ste sigurni da želite da deaktivirate ovaj automobil?');">
+
+                                    <button type="submit"
+                                            class="btn btn-danger btn-sm">
+                                        Deaktivirajte
+                                    </button>
+
+                                </form>
+                            </div>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

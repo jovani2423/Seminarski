@@ -1,0 +1,142 @@
+﻿@model RentACar.Presentation.ViewModels.BranchViewModel
+
+@{
+    ViewData["Title"] = "Izmena poslovnice";
+}
+
+<div class="branch-form-page">
+    <div class="branch-form-header">
+        <a asp-action="Index" class="branch-form-back">
+            <i class="bi bi-arrow-left"></i>
+            Nazad na poslovnice
+        </a>
+
+        <div class="branch-form-title">
+            <div class="branch-form-icon">
+                <i class="bi bi-building-gear"></i>
+            </div>
+
+            <div>
+                <h2>Izmena poslovnice</h2>
+                <p>Ažurirajte podatke o izabranoj poslovnici.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="branch-form-card">
+        <form asp-action="Edit" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" asp-for="Id" />
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger mb-4"></div>
+
+            <div class="branch-form-section">
+                <h5>
+                    <i class="bi bi-info-circle"></i>
+                    Osnovni podaci
+                </h5>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="Name" class="branch-form-label">
+                            Naziv poslovnice
+                            <span>*</span>
+                        </label>
+
+                        <input asp-for="Name"
+                               class="form-control branch-form-input" />
+
+                        <span asp-validation-for="Name"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label asp-for="City" class="branch-form-label">
+                            Grad
+                        </label>
+
+                        <input asp-for="City"
+                               class="form-control branch-form-input" />
+
+                        <span asp-validation-for="City"
+                              class="text-danger"></span>
+                    </div>
+
+                    <div class="col-12">
+                        <label asp-for="Address" class="branch-form-label">
+                            Adresa poslovnice
+                            <span>*</span>
+                        </label>
+
+                        <input asp-for="Address"
+                               class="form-control branch-form-input" />
+
+                        <span asp-validation-for="Address"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="branch-form-divider"></div>
+
+            <div class="branch-form-section">
+                <h5>
+                    <i class="bi bi-telephone"></i>
+                    Kontakt podaci
+                </h5>
+
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <label asp-for="PhoneNumber" class="branch-form-label">
+                            Kontakt telefon
+                        </label>
+
+                        <input asp-for="PhoneNumber"
+                               class="form-control branch-form-input" />
+
+                        <span asp-validation-for="PhoneNumber"
+                              class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="branch-form-divider"></div>
+
+            <div class="branch-form-status">
+                <div>
+                    <strong>Status poslovnice</strong>
+                    <p>Aktivne poslovnice mogu se dodeljivati automobilima.</p>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input asp-for="IsActive"
+                           class="form-check-input"
+                           type="checkbox" />
+
+                    <label asp-for="IsActive" class="form-check-label">
+                        Aktivna
+                    </label>
+                </div>
+            </div>
+
+            <div class="branch-form-actions">
+                <a asp-action="Index" class="branch-cancel-btn">
+                    Otkažite
+                </a>
+
+                <button type="submit" class="branch-save-btn">
+                    <i class="bi bi-check-lg"></i>
+                    Sačuvajte izmene
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

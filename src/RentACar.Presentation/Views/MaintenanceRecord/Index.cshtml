@@ -1,0 +1,251 @@
+﻿@model List<RentACar.Presentation.ViewModels.MaintenanceRecordViewModel>
+
+@{
+    ViewData["Title"] = "Održavanje automobila";
+
+    var totalCost = Model.Sum(m => m.Cost);
+    var completedCount = Model.Count(m => m.Status == "Completed");
+    var plannedCount = Model.Count(m => m.Status == "Planned");
+    var inProgressCount = Model.Count(m => m.Status == "InProgress");
+}
+
+<div class="branch-page">
+
+    <div class="branch-page-header">
+        <div class="branch-page-heading">
+            <div class="branch-page-icon">
+                <i class="bi bi-tools"></i>
+            </div>
+
+            <div>
+                <h2>Održavanje automobila</h2>
+                <p>Pregled i upravljanje evidencijom održavanja vozila</p>
+            </div>
+        </div>
+
+        <a asp-action="Create" class="branch-primary-btn">
+            <i class="bi bi-plus-lg"></i>
+            Dodajte evidenciju
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show branch-alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show branch-alert">
+            <i class="bi bi-exclamation-circle-fill me-2"></i>
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="branch-summary">
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-clipboard-data"></i>
+            </div>
+            <div>
+                <span>Ukupno evidencija</span>
+                <strong>@Model.Count</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-check-circle"></i>
+            </div>
+            <div>
+                <span>Završena održavanja</span>
+                <strong>@completedCount</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+            <div>
+                <span>Planirana / u toku</span>
+                <strong>@(plannedCount + inProgressCount)</strong>
+            </div>
+        </div>
+
+        <div class="branch-summary-card">
+            <div class="branch-summary-icon">
+                <i class="bi bi-currency-exchange"></i>
+            </div>
+            <div>
+                <span>Ukupni troškovi</span>
+                <strong>@totalCost.ToString("N2") RSD</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="branch-table-card">
+
+        <div class="branch-table-header">
+            <div>
+                <h4>Evidencija održavanja</h4>
+                <p>Spisak svih servisnih aktivnosti na automobilima</p>
+            </div>
+
+            <span class="branch-count">
+                @Model.Count evidencija
+            </span>
+        </div>
+
+        @if (Model.Any())
+        {
+            <div class="table-responsive">
+                <table class="table branch-table align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Automobil</th>
+                            <th>Datum</th>
+                            <th>Opis održavanja</th>
+                            <th>Trošak</th>
+                            <th>Status</th>
+                            <th class="text-end">Akcije</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @foreach (var record in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="branch-name-cell">
+                                        <div class="branch-row-icon">
+                                            <i class="bi bi-car-front"></i>
+                                        </div>
+
+                                        <div>
+                                            <strong>
+                                                @record.CarBrand @record.CarModel
+                                            </strong>
+                                            <small>
+                                                @record.RegistrationNumber
+                                            </small>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="branch-info-cell">
+                                        <strong>
+                                            @record.MaintenanceDate.ToString("dd.MM.yyyy.")
+                                        </strong>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="maintenance-description">
+                                        @(record.Description.Length > 65
+                                            ? record.Description.Substring(0, 65) + "..."
+                                            : record.Description)
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <strong class="maintenance-cost">
+                                        @record.Cost.ToString("N2") RSD
+                                    </strong>
+                                </td>
+
+                                <td>
+                                    @if (record.Status == "Completed")
+                                    {
+                                        <span class="maintenance-status maintenance-status-completed">
+                                            <span></span>
+                                            Završeno
+                                        </span>
+                                    }
+                                    else if (record.Status == "InProgress")
+                                    {
+                                        <span class="maintenance-status maintenance-status-progress">
+                                            <span></span>
+                                            U toku
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="maintenance-status maintenance-status-planned">
+                                            <span></span>
+                                            Planirano
+                                        </span>
+                                    }
+                                </td>
+
+                                <td class="text-end">
+                                    <div class="branch-actions">
+                                        <a asp-action="Edit"
+                                           asp-route-id="@record.Id"
+                                           class="branch-action-btn branch-edit-btn"
+                                           title="Izmeni evidenciju">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <form asp-action="Delete"
+                                              asp-route-id="@record.Id"
+                                              method="post"
+                                              class="d-inline"
+                                              onsubmit="return confirm('Da li ste sigurni da želite da obrišete ovu evidenciju održavanja?');">
+                                            @Html.AntiForgeryToken()
+
+                                            <button type="submit"
+                                                    class="branch-action-btn branch-delete-btn"
+                                                    title="Obrišite evidenciju">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="branch-empty-state">
+                <div class="branch-empty-icon">
+                    <i class="bi bi-tools"></i>
+                </div>
+
+                <h4>Nema evidentiranih održavanja</h4>
+
+                <p>
+                    Dodajte prvu evidenciju kako biste pratili servisne
+                    aktivnosti i troškove automobila.
+                </p>
+
+                <a asp-action="Create" class="branch-primary-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Dodajte evidenciju
+                </a>
+            </div>
+        }
+    </div>
+
+    <div class="branch-back-area">
+        <a asp-controller="Car" asp-action="Index"
+           class="branch-back-link">
+            <i class="bi bi-arrow-left"></i>
+            Nazad na automobile
+        </a>
+    </div>
+
+</div>

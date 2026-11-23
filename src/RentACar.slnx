@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RentACar.BLL/RentACar.BLL.csproj" />
+  <Project Path="RentACar.DAL/RentACar.DAL.csproj" />
+  <Project Path="RentACar.Presentation/RentACar.Presentation.csproj" />
+</Solution>

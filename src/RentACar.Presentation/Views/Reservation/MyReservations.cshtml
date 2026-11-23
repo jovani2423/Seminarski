@@ -1,0 +1,147 @@
+﻿@model List<RentACar.BLL.DTOs.ReservationDto>
+
+@{
+    ViewData["Title"] = "Moje rezervacije";
+}
+
+<div class="my-reservations-page">
+    <div class="reservations-heading">
+        <div>
+            <span class="reservation-label">RENT A CAR</span>
+            <h1>Moje rezervacije</h1>
+            <p>Pregledajte svoje rezervacije i upravljajte svojim putovanjima.</p>
+        </div>
+
+        <a asp-controller="Car"
+           asp-action="Index"
+           class="btn btn-gold">
+            + Rezervišite automobil
+        </a>
+    </div>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["ErrorMessage"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="reservations-empty">
+            <div class="empty-icon">🚗</div>
+            <h3>Još uvek nemate rezervacija</h3>
+            <p>Kada rezervišete automobil, ovde će biti prikazani svi detalji.</p>
+
+            <a asp-controller="Car"
+               asp-action="Index"
+               class="btn btn-gold">
+                Pogledajte automobile
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="reservations-list">
+            @foreach (var reservation in Model)
+            {
+                <div class="reservation-item">
+                    <div class="reservation-item-header">
+                        <div>
+                            <span class="reservation-number">
+                                REZERVACIJA #@reservation.Id
+                            </span>
+
+                            <h3>
+                                @reservation.CarBrand @reservation.CarModel
+                            </h3>
+                        </div>
+
+                        @if (reservation.Status == "Confirmed")
+                        {
+                            <span class="reservation-status status-confirmed">
+                                Potvrđena
+                            </span>
+                        }
+                        else if (reservation.Status == "Cancelled")
+                        {
+                            <span class="reservation-status status-cancelled">
+                                Otkazana
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="reservation-status status-pending">
+                                @reservation.Status
+                            </span>
+                        }
+                    </div>
+
+                    <div class="reservation-details">
+                        <div class="reservation-detail">
+                            <span>Poslovnica</span>
+                            <strong>@reservation.BranchName</strong>
+                        </div>
+
+                        <div class="reservation-detail">
+                            <span>Preuzimanje</span>
+                            <strong>@reservation.StartDate.ToString("dd.MM.yyyy.")</strong>
+                        </div>
+
+                        <div class="reservation-detail">
+                            <span>Vraćanje</span>
+                            <strong>@reservation.EndDate.ToString("dd.MM.yyyy.")</strong>
+                        </div>
+
+                        <div class="reservation-detail">
+                            <span>Trajanje</span>
+                            <strong>@reservation.NumberOfDays dana</strong>
+                        </div>
+
+                        <div class="reservation-detail">
+                            <span>Cena po danu</span>
+                            <strong>@reservation.PricePerDay.ToString("N2") RSD</strong>
+                        </div>
+                    </div>
+
+                    <div class="reservation-item-footer">
+                        <div>
+                            <span class="total-label">Ukupna cena</span>
+                            <strong class="reservation-total">
+                                @reservation.TotalPrice.ToString("N2") RSD
+                            </strong>
+                        </div>
+
+                        @if (reservation.Status != "Cancelled")
+                        {
+                            <form asp-controller="Reservation"
+                                  asp-action="Cancel"
+                                  asp-route-id="@reservation.Id"
+                                  method="post"
+                                  onsubmit="return confirm('Da li ste sigurni da želite da otkažete ovu rezervaciju?');">
+
+                                <button type="submit"
+                                        class="btn btn-outline-danger cancel-reservation-btn">
+                                    Otkažite rezervaciju
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">
+                                Nema dostupnih akcija
+                            </span>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
